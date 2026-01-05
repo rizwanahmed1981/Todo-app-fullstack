@@ -1,9 +1,3 @@
-# User-specific prompts and history
-prompts/
-
-# Claude-specific local settings
-.claude/settings.local.json
-
 # Python artifacts
 __pycache__/
 *.pyc
@@ -25,9 +19,6 @@ env/
 # Build artifacts
 build/
 dist/
-
-# Dependency directories (e.g., for potential JS tooling)
-node_modules/
 
 # Log files
 *.log

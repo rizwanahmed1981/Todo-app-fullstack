@@ -24,8 +24,8 @@ class Task:
     title: str
     description: Optional[str] = None
     completed: bool = False
-    created_at: datetime = None
-    updated_at: datetime = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     def __post_init__(self) -> None:
         """Initialize timestamps if not provided."""

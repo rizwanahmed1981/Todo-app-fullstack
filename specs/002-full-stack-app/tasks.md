@@ -5,26 +5,26 @@ This document outlines the actionable development tasks for Phase 2 of the Todo 
 
 ## Phase 1: Setup (Project Initialization)
 
-- [ ] T001 Create project structure with frontend/ and backend/ directories
-- [ ] T002 Initialize Next.js 16 project in frontend/ directory with TypeScript and Tailwind CSS
-- [ ] T003 Initialize FastAPI project in backend/ directory with proper structure
-- [ ] T004 Set up shared configuration files (.env, .gitignore, etc.)
+- [X] T001 Create project structure with frontend/ and backend/ directories
+- [X] T002 Initialize Next.js 16 project in frontend/ directory with TypeScript and Tailwind CSS
+- [X] T003 Initialize FastAPI project in backend/ directory with proper structure
+- [X] T004 Set up shared configuration files (.env, .gitignore, etc.)
 - [ ] T005 Configure development environment with proper tooling (UV package manager)
-- [ ] T006 Initialize git repository with proper ignore files
+- [X] T006 Initialize git repository with proper ignore files
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-- [ ] T007 Set up Neon Serverless PostgreSQL database connection in backend
-- [ ] T008 Configure SQLModel ORM with proper database settings
-- [ ] T009 Define User model in backend/models.py (managed by Better Auth)
-- [ ] T010 Define Task model in backend/models.py with user_id foreign key
-- [ ] T011 Implement database connection pool configuration
-- [ ] T012 Implement database migrations setup
-- [ ] T013 Integrate Better Auth with FastAPI for authentication
-- [ ] T014 Implement JWT token generation and validation
-- [ ] T015 Create authentication middleware for FastAPI
-- [ ] T016 Set up user session management
-- [ ] T017 Implement token refresh mechanisms
+- [X] T007 Set up Neon Serverless PostgreSQL database connection in backend
+- [X] T008 Configure SQLModel ORM with proper database settings
+- [X] T009 Define User model in backend/models.py (managed by Better Auth)
+- [X] T010 Define Task model in backend/models.py with user_id foreign key
+- [X] T011 Implement database connection pool configuration
+- [X] T012 Implement database migrations setup
+- [X] T013 Integrate Better Auth with FastAPI for authentication
+- [X] T014 Implement JWT token generation and validation
+- [X] T015 Create authentication middleware for FastAPI
+- [X] T016 Set up user session management
+- [X] T017 Implement token refresh mechanisms
 - [ ] T018 Configure TypeScript and Tailwind CSS in frontend
 - [ ] T019 Set up navigation structure and layout components in frontend
 - [ ] T020 Create basic page structure (login, signup, dashboard) in frontend
@@ -32,19 +32,19 @@ This document outlines the actionable development tasks for Phase 2 of the Todo 
 
 ## Phase 3: User Story 1 - Account Management [US1]
 
-- [ ] T022 [P] [US1] Create login page component with email and password inputs
-- [ ] T023 [P] [US1] Create signup page component with email, password, and confirm password fields
-- [ ] T024 [P] [US1] Implement login API endpoint (POST /api/auth/login)
-- [ ] T025 [P] [US1] Implement signup API endpoint (POST /api/auth/signup)
-- [ ] T026 [P] [US1] Implement logout API endpoint (POST /api/auth/logout)
+- [X] T022 [P] [US1] Create login page component with email and password inputs
+- [X] T023 [P] [US1] Create signup page component with email, password, and confirm password fields
+- [X] T024 [P] [US1] Implement login API endpoint (POST /api/auth/login)
+- [X] T025 [P] [US1] Implement signup API endpoint (POST /api/auth/signup)
+- [X] T026 [P] [US1] Implement logout API endpoint (POST /api/auth/logout)
 - [ ] T027 [P] [US1] Integrate Better Auth frontend components for login/signup
 - [ ] T028 [P] [US1] Implement JWT token handling in frontend
 - [ ] T029 [P] [US1] Create authentication guards for protected routes
-- [ ] T030 [P] [US1] Add proper error handling for authentication flows
-- [ ] T031 [P] [US1] Implement password validation (minimum 8 characters, mixed case, numbers)
-- [ ] T032 [US1] Write unit tests for authentication endpoints
-- [ ] T033 [US1] Test user registration with email uniqueness enforcement
-- [ ] T034 [US1] Test login/logout functionality with JWT token management
+- [X] T030 [P] [US1] Add proper error handling for authentication flows
+- [X] T031 [P] [US1] Implement password validation (minimum 8 characters, mixed case, numbers)
+- [X] T032 [US1] Write unit tests for authentication endpoints
+- [X] T033 [US1] Test user registration with email uniqueness enforcement
+- [X] T034 [US1] Test login/logout functionality with JWT token management
 
 ## Phase 4: User Story 2 - Task Creation [US2]
 

@@ -1,0 +1,47 @@
+[tool.black]
+line-length = 88
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "W", "I", "N", "B", "A", "C4", "UP", "S", "D"]
+ignore = ["D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107", "D203", "D212", "E501"]
+
+[tool.pyright]
+include = ["app"]
+exclude = ["**/__pycache__"]
+typeCheckingMode = "basic"
+reportMissingImports = "warning"
+reportUndefinedVariable = "warning"
+pythonVersion = "3.11"
+pythonPlatform = "Linux"
+
+[tool.poetry]
+name = "todo-evolution-backend"
+version = "0.1.0"
+description = "Phase 2 backend for the Todo Evolution project."
+authors = ["Claude <claude@anthropic.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{ include = "app" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+sqlmodel = ">=0.0.31"
+fastapi = ">=0.128.0"
+uvicorn = ">=0.40.0"
+pydantic = ">=2.12.5"
+pydantic-settings = ">=2.12.0"
+python-multipart = ">=0.0.21"
+better-auth = ">=0.0.1b11"
+sqlalchemy = ">=2.0.45"
+psycopg2-binary = ">=2.9.11"
+python-jose = { extras = ["cryptography"], version = ">=3.3.0" }
+passlib = { extras = ["bcrypt"], version = ">=1.7.4" }
+alembic = ">=1.17.2"
+python-dotenv = ">=1.2.1"
+fastapi-users = { extras = ["sqlalchemy"], version = "^13.0.0" }
+fastapi-users-db-sqlalchemy = "^6.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
