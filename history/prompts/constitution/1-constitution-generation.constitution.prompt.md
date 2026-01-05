@@ -1,16 +1,136 @@
-<!--
-Sync Impact Report:
-Version change: N/A → 1.0.0
-Modified principles: N/A (new constitution)
-Added sections: All sections (new document)
-Removed sections: N/A
-Templates requiring updates:
-- .specify/templates/plan-template.md ✅ updated
-- .specify/templates/spec-template.md ✅ updated
-- .specify/templates/tasks-template.md ✅ updated
-- .specify/templates/commands/*.md ✅ reviewed
-Follow-up TODOs: None
--->
+---
+id: 1
+title: constitution-generation
+stage: constitution
+date: 2026-01-05
+surface: agent
+model: claude-sonnet-4-5-20250929
+feature: none
+branch: master
+user: ecomw
+command: /sp.constitution
+labels: [constitution,spec-driven-development,architecture]
+links:
+  spec: null
+  ticket: null
+  adr: null
+  pr: null
+files:
+ - .specify/memory/constitution.md
+tests:
+ - none
+---
+
+## Prompt
+
+# Constitution Generation Prompt
+
+You are creating the foundational principles and constraints for the Todo Evolution project. This constitution will govern all technical decisions throughout the 5 phases of development.
+
+## Context
+- Project: Todo app evolving from Python console to cloud-native AI chatbot
+- Phases: 5 phases from console app to Kubernetes deployment
+- Stack: Python 3.14, UV, FastAPI, Next.js, OpenAI Agents SDK, MCP, Kubernetes
+- Approach: Spec-Driven Development using Claude Code
+
+## Generate a Constitution Document that includes:
+
+### 1. Core Principles (WHY we build this way)
+Define the fundamental values that guide all decisions:
+- Spec-driven development (no code without specs)
+- AI-first architecture
+- Cloud-native design
+- User privacy and security
+- Scalability from day one
+
+### 2. Technical Constraints (WHAT we must/must not do)
+Specify hard requirements:
+- Python version: 3.14 exclusively
+- Package manager: UV only (no pip allowed)
+- Architecture: Monolithic repository structure
+- Database: Neon Serverless PostgreSQL
+- Frontend: Next.js 16 with App Router
+- Backend: FastAPI with async/await
+- Authentication: Better Auth with JWT
+- AI: OpenAI Agents SDK + Official MCP SDK
+
+### 3. Code Quality Standards
+Define expectations for:
+- Type hints (required for all Python functions)
+- Documentation (docstrings mandatory)
+- Testing (minimum coverage requirements)
+- Error handling patterns
+- Logging standards
+- Security practices
+
+### 4. Architecture Patterns
+Specify preferred patterns:
+- Stateless services with database persistence
+- RESTful API design
+- Event-driven architecture (Phases 4-5)
+- MCP tools for AI interactions
+- JWT-based authentication flow
+
+### 5. Development Workflow
+Define the process:
+- Spec-Kit lifecycle: Specify → Plan → Tasks → Implement
+- Git workflow and branching strategy
+- Code review requirements
+- Testing before merge
+- Documentation updates
+
+### 6. Performance Expectations
+Set benchmarks for:
+- API response times
+- Database query optimization
+- Frontend load times
+- Kubernetes pod startup times
+- Event processing latency
+
+### 7. Security Requirements
+Mandate security practices:
+- No secrets in code
+- Environment variables for configuration
+- JWT token validation
+- User data isolation
+- SQL injection prevention
+- XSS protection
+
+### 8. Scalability Guidelines
+Define scaling approach:
+- Horizontal scaling readiness
+- Stateless design principles
+- Database connection pooling
+- Caching strategies
+- Load balancing preparation
+
+### 9. DevOps Standards
+Specify deployment practices:
+- Containerization with Docker
+- Helm charts for Kubernetes
+- CI/CD pipeline requirements
+- Monitoring and logging
+- Health checks and readiness probes
+
+### 10. AI Agent Guidelines
+Define how AI agents should:
+- Interact with MCP tools
+- Handle conversation context
+- Manage stateless operations
+- Store conversation history
+- Error handling and fallbacks
+
+## Output Format
+Create a markdown document titled `specs/constitution.md` with:
+- Clear section headers
+- Numbered principles
+- Concrete examples where applicable
+- Rationale for each major decision
+- References to hackathon requirements
+
+## Example Structure
+
+## Response snapshot
 
 # Todo Evolution Constitution
 
@@ -274,3 +394,18 @@ Python 3.14 exclusively for all environments; UV package manager only (no pip al
 This constitution is the authoritative source for all technical decisions in the Todo Evolution project. All development activities must comply with these principles. Amendments require explicit documentation, team approval, and migration planning. The constitution supersedes all other practices and guides. All pull requests and code reviews must verify compliance with these principles. Complexity must be justified against these foundational principles. Use CLAUDE.md for runtime development guidance.
 
 **Version**: 1.0.0 | **Ratified**: 2026-01-05 | **Last Amended**: 2026-01-05
+
+## Outcome
+
+- ✅ Impact: Created foundational constitution document for Todo Evolution project that will govern all technical decisions across 5 phases of development
+- 🧪 Tests: none
+- 📁 Files: .specify/memory/constitution.md
+- 🔁 Next prompts: /sp.specify to create feature specifications
+- 🧠 Reflection: The constitution establishes clear principles and constraints that will guide the project's evolution from Python console app to cloud-native AI chatbot
+
+## Evaluation notes (flywheel)
+
+- Failure modes observed: none
+- Graders run and results (PASS/FAIL): N/A
+- Prompt variant (if applicable): N/A
+- Next experiment (smallest change to try): Begin feature specification based on constitution principles

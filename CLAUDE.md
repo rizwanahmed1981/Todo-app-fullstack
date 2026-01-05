@@ -1,210 +1,511 @@
-# Claude Code Rules
+# Todo App - Hackathon II Project
 
-This file is generated during init for the selected agent.
+## Project Overview
+This is a spec-driven development project that evolves from a Python console app to a cloud-native AI chatbot. We follow the **Agentic Dev Stack** workflow where specifications drive all implementation decisions.
 
-You are an expert AI assistant specializing in Spec-Driven Development (SDD). Your primary goal is to work with the architext to build products.
+## Critical Development Principles
 
-## Task context
+### Python & Package Management
+- **Python Version**: Python 3.14 ONLY for all virtual environments
+- **Package Manager**: UV exclusively - NO pip usage allowed
+- **Architecture**: Monolithic approach (all phases in single repository structure)
 
-**Your Surface:** You operate on a project level, providing guidance to users and executing development tasks via a defined set of tools.
+### Spec-Driven Development Workflow
+**MANDATORY ORDER**: constitution → Specify → Plan → Tasks → Implement
 
-**Your Success is Measured By:**
-- All outputs strictly follow the user intent.
-- Prompt History Records (PHRs) are created automatically and accurately for every user prompt.
-- Architectural Decision Record (ADR) suggestions are made intelligently for significant decisions.
-- All changes are small, testable, and reference code precisely.
+Never write code without a corresponding task. Never create tasks without a plan. Never plan without specifications and constitution.
 
-## Core Guarantees (Product Promise)
+## Project Structure
 
-- Record every user input verbatim in a Prompt History Record (PHR) after every user message. Do not truncate; preserve full multiline input.
-- PHR routing (all under `history/prompts/`):
-  - Constitution → `history/prompts/constitution/`
-  - Feature-specific → `history/prompts/<feature-name>/`
-  - General → `history/prompts/general/`
-- ADR suggestions: when an architecturally significant decision is detected, suggest: "📋 Architectural decision detected: <brief>. Document? Run `/sp.adr <title>`." Never auto‑create ADRs; require user consent.
+```
+hackathon-todo/
+├── .spec-kit/              # Spec-Kit configuration
+│   └── config.yaml
+├── specs/                  # ALL specifications (source of truth)
+│   ├── constitution.md     # WHY: Principles & constraints
+│   ├── overview.md         # Project overview
+│   ├── architecture.md     # System architecture
+│   ├── features/           # WHAT: Feature specifications
+│   │   ├── task-crud.md
+│   │   ├── authentication.md
+│   │   └── chatbot.md
+│   ├── api/                # HOW: API specifications
+│   │   ├── rest-endpoints.md
+│   │   └── mcp-tools.md
+│   ├── database/           # Database specifications
+│   │   └── schema.md
+│   └── ui/                 # UI specifications
+│       ├── components.md
+│       └── pages.md
+├── speckit.specify         # Requirements & acceptance criteria
+├── speckit.plan           # Technical architecture & components
+├── speckit.tasks          # Atomic, testable work units
+├── CLAUDE.md              # This file
+├── AGENTS.md              # Cross-agent instructions
+├── phase1/                # Python console app
+│   ├── src/
+│   ├── tests/
+│   └── pyproject.toml
+├── phase2-3/              # Monolithic web + chatbot
+│   ├── frontend/          # Next.js app
+│   │   ├── app/
+│   │   ├── components/
+│   │   ├── lib/
+│   │   └── package.json
+│   ├── backend/           # FastAPI + MCP server
+│   │   ├── main.py
+│   │   ├── models.py
+│   │   ├── routes/
+│   │   ├── mcp/
+│   │   └── pyproject.toml
+│   └── docker-compose.yml
+├── phase4-5/              # Kubernetes deployment
+│   ├── k8s/
+│   ├── helm/
+│   └── dapr/
+└── README.md
+```
 
-## Development Guidelines
+## Spec-Kit Hierarchy (Source of Truth)
 
-### 1. Authoritative Source Mandate:
-Agents MUST prioritize and use MCP tools and CLI commands for all information gathering and task execution. NEVER assume a solution from internal knowledge; all methods require external verification.
+### 1. Constitution (WHY - Principles)
+**File**: `specs/constitution.md`
 
-### 2. Execution Flow:
-Treat MCP servers as first-class tools for discovery, verification, execution, and state capture. PREFER CLI interactions (running commands and capturing outputs) over manual file creation or reliance on internal knowledge.
+Defines non-negotiables:
+- Python 3.14 requirement
+- UV-only package management
+- Monolithic architecture approach
+- Security standards
+- Performance expectations
+- Code quality standards
 
-### 3. Knowledge capture (PHR) for Every User Input.
-After completing requests, you **MUST** create a PHR (Prompt History Record).
+**Agent Rule**: Check constitution before proposing any solution.
 
-**When to create PHRs:**
-- Implementation work (code changes, new features)
-- Planning/architecture discussions
-- Debugging sessions
-- Spec/task/plan creation
-- Multi-step workflows
+### 2. Specify (WHAT - Requirements)
+**File**: `speckit.specify`
 
-**PHR Creation Process:**
+Contains:
+- User stories and journeys
+- Feature requirements
+- Acceptance criteria
+- Business constraints
+- Domain rules
 
-1) Detect stage
-   - One of: constitution | spec | plan | tasks | red | green | refactor | explainer | misc | general
+**Agent Rule**: Never infer missing requirements - request clarification or propose spec updates.
 
-2) Generate title
-   - 3–7 words; create a slug for the filename.
+### 3. Plan (HOW - Architecture)
+**File**: `speckit.plan`
 
-2a) Resolve route (all under history/prompts/)
-  - `constitution` → `history/prompts/constitution/`
-  - Feature stages (spec, plan, tasks, red, green, refactor, explainer, misc) → `history/prompts/<feature-name>/` (requires feature context)
-  - `general` → `history/prompts/general/`
+Includes:
+- Component breakdown
+- API designs & schemas
+- Service boundaries
+- Data flow diagrams
+- Technology choices
 
-3) Prefer agent‑native flow (no shell)
-   - Read the PHR template from one of:
-     - `.specify/templates/phr-template.prompt.md`
-     - `templates/phr-template.prompt.md`
-   - Allocate an ID (increment; on collision, increment again).
-   - Compute output path based on stage:
-     - Constitution → `history/prompts/constitution/<ID>-<slug>.constitution.prompt.md`
-     - Feature → `history/prompts/<feature-name>/<ID>-<slug>.<stage>.prompt.md`
-     - General → `history/prompts/general/<ID>-<slug>.general.prompt.md`
-   - Fill ALL placeholders in YAML and body:
-     - ID, TITLE, STAGE, DATE_ISO (YYYY‑MM‑DD), SURFACE="agent"
-     - MODEL (best known), FEATURE (or "none"), BRANCH, USER
-     - COMMAND (current command), LABELS (["topic1","topic2",...])
-     - LINKS: SPEC/TICKET/ADR/PR (URLs or "null")
-     - FILES_YAML: list created/modified files (one per line, " - ")
-     - TESTS_YAML: list tests run/added (one per line, " - ")
-     - PROMPT_TEXT: full user input (verbatim, not truncated)
-     - RESPONSE_TEXT: key assistant output (concise but representative)
-     - Any OUTCOME/EVALUATION fields required by the template
-   - Write the completed file with agent file tools (WriteFile/Edit).
-   - Confirm absolute path in output.
+**Agent Rule**: All architectural decisions must be documented here.
 
-4) Use sp.phr command file if present
-   - If `.**/commands/sp.phr.*` exists, follow its structure.
-   - If it references shell but Shell is unavailable, still perform step 3 with agent‑native tools.
+### 4. Tasks (BREAKDOWN - Implementation Units)
+**File**: `speckit.tasks`
 
-5) Shell fallback (only if step 3 is unavailable or fails, and Shell is permitted)
-   - Run: `.specify/scripts/bash/create-phr.sh --title "<title>" --stage <stage> [--feature <name>] --json`
-   - Then open/patch the created file to ensure all placeholders are filled and prompt/response are embedded.
+Each task must contain:
+- Unique Task ID (e.g., T-001)
+- Clear description
+- Preconditions
+- Expected outputs
+- Files to modify
+- Links to Specify + Plan sections
 
-6) Routing (automatic, all under history/prompts/)
-   - Constitution → `history/prompts/constitution/`
-   - Feature stages → `history/prompts/<feature-name>/` (auto-detected from branch or explicit feature context)
-   - General → `history/prompts/general/`
+**Agent Rule**: Only implement what tasks explicitly authorize.
 
-7) Post‑creation validations (must pass)
-   - No unresolved placeholders (e.g., `{{THIS}}`, `[THAT]`).
-   - Title, stage, and dates match front‑matter.
-   - PROMPT_TEXT is complete (not truncated).
-   - File exists at the expected path and is readable.
-   - Path matches route.
+## How to Use Specs
 
-8) Report
-   - Print: ID, path, stage, title.
-   - On any failure: warn but do not block the main command.
-   - Skip PHR only for `/sp.phr` itself.
+### Referencing Specs
+Always reference specs when implementing:
+```
+[Task]: T-042
+[From]: specs/features/task-crud.md §2.1, speckit.plan §3.4
+[Phase]: Phase II
+```
 
-### 4. Explicit ADR suggestions
-- When significant architectural decisions are made (typically during `/sp.plan` and sometimes `/sp.tasks`), run the three‑part test and suggest documenting with:
-  "📋 Architectural decision detected: <brief> — Document reasoning and tradeoffs? Run `/sp.adr <decision-title>`"
-- Wait for user consent; never auto‑create the ADR.
+### Updating Specs
+If requirements change:
+1. Update `speckit.specify` (WHAT changed)
+2. Update `speckit.plan` (HOW it affects architecture)
+3. Update `speckit.tasks` (new implementation steps)
+4. Then implement
 
-### 5. Human as Tool Strategy
-You are not expected to solve every problem autonomously. You MUST invoke the user for input when you encounter situations that require human judgment. Treat the user as a specialized tool for clarification and decision-making.
+## Python Development Guidelines
 
-**Invocation Triggers:**
-1.  **Ambiguous Requirements:** When user intent is unclear, ask 2-3 targeted clarifying questions before proceeding.
-2.  **Unforeseen Dependencies:** When discovering dependencies not mentioned in the spec, surface them and ask for prioritization.
-3.  **Architectural Uncertainty:** When multiple valid approaches exist with significant tradeoffs, present options and get user's preference.
-4.  **Completion Checkpoint:** After completing major milestones, summarize what was done and confirm next steps. 
+### Environment Setup
+```bash
+# Create virtual environment with Python 3.14
+uv venv --python 3.14
 
-## Default policies (must follow)
-- Clarify and plan first - keep business understanding separate from technical plan and carefully architect and implement.
-- Do not invent APIs, data, or contracts; ask targeted clarifiers if missing.
-- Never hardcode secrets or tokens; use `.env` and docs.
-- Prefer the smallest viable diff; do not refactor unrelated code.
-- Cite existing code with code references (start:end:path); propose new code in fenced blocks.
-- Keep reasoning private; output only decisions, artifacts, and justifications.
+# Activate environment
+source .venv/bin/activate  # Unix/macOS
+# or
+.venv\Scripts\activate  # Windows
 
-### Execution contract for every request
-1) Confirm surface and success criteria (one sentence).
-2) List constraints, invariants, non‑goals.
-3) Produce the artifact with acceptance checks inlined (checkboxes or tests where applicable).
-4) Add follow‑ups and risks (max 3 bullets).
-5) Create PHR in appropriate subdirectory under `history/prompts/` (constitution, feature-name, or general).
-6) If plan/tasks identified decisions that meet significance, surface ADR suggestion text as described above.
+# Install dependencies
+uv pip install -r requirements.txt
 
-### Minimum acceptance criteria
-- Clear, testable acceptance criteria included
-- Explicit error paths and constraints stated
-- Smallest viable change; no unrelated edits
-- Code references to modified/inspected files where relevant
+# Add new package
+uv pip install <package-name>
+uv pip freeze > requirements.txt
+```
 
-## Architect Guidelines (for planning)
+### Phase 1: Console App
+**Stack**: Python 3.14, UV
+**Location**: `/phase1`
 
-Instructions: As an expert architect, generate a detailed architectural plan for [Project Name]. Address each of the following thoroughly.
+```bash
+# Run console app
+cd phase1
+uv run python src/main.py
 
-1. Scope and Dependencies:
-   - In Scope: boundaries and key features.
-   - Out of Scope: explicitly excluded items.
-   - External Dependencies: systems/services/teams and ownership.
+# Run tests
+uv run pytest tests/
+```
 
-2. Key Decisions and Rationale:
-   - Options Considered, Trade-offs, Rationale.
-   - Principles: measurable, reversible where possible, smallest viable change.
+**Code Standards**:
+- Use type hints for all functions
+- Follow PEP 8 style guide
+- All functions must have docstrings
+- Use dataclasses for data models
+- Handle errors gracefully
 
-3. Interfaces and API Contracts:
-   - Public APIs: Inputs, Outputs, Errors.
-   - Versioning Strategy.
-   - Idempotency, Timeouts, Retries.
-   - Error Taxonomy with status codes.
+### Phases 2-3: Backend (FastAPI)
+**Stack**: Python 3.14, FastAPI, SQLModel, UV
+**Location**: `/phase2-3/backend`
 
-4. Non-Functional Requirements (NFRs) and Budgets:
-   - Performance: p95 latency, throughput, resource caps.
-   - Reliability: SLOs, error budgets, degradation strategy.
-   - Security: AuthN/AuthZ, data handling, secrets, auditing.
-   - Cost: unit economics.
+```bash
+# Run backend
+cd phase2-3/backend
+uv run uvicorn main:app --reload --port 8000
 
-5. Data Management and Migration:
-   - Source of Truth, Schema Evolution, Migration and Rollback, Data Retention.
+# Run with MCP server
+uv run python -m mcp.server
+```
 
-6. Operational Readiness:
-   - Observability: logs, metrics, traces.
-   - Alerting: thresholds and on-call owners.
-   - Runbooks for common tasks.
-   - Deployment and Rollback strategies.
-   - Feature Flags and compatibility.
+**Code Standards**:
+- Async/await for all I/O operations
+- Pydantic models for request/response
+- SQLModel for database ORM
+- JWT authentication via Better Auth
+- Proper error handling with HTTPException
 
-7. Risk Analysis and Mitigation:
-   - Top 3 Risks, blast radius, kill switches/guardrails.
+**Project Structure**:
+```
+backend/
+├── main.py              # FastAPI app entry
+├── models.py            # SQLModel database models
+├── routes/              # API route handlers
+│   ├── tasks.py
+│   └── chat.py
+├── mcp/                 # MCP server & tools
+│   ├── server.py
+│   └── tools.py
+├── db.py                # Database connection
+└── pyproject.toml       # UV dependencies
+```
 
-8. Evaluation and Validation:
-   - Definition of Done (tests, scans).
-   - Output Validation for format/requirements/safety.
+**API Conventions**:
+- All routes under `/api/{user_id}/`
+- Return JSON responses
+- Use dependency injection for auth
+- Filter all queries by authenticated user
 
-9. Architectural Decision Record (ADR):
-   - For each significant decision, create an ADR and link it.
+## Frontend Development Guidelines
 
-### Architecture Decision Records (ADR) - Intelligent Suggestion
+### Phases 2-3: Next.js Frontend
+**Stack**: Next.js 16 (App Router), TypeScript, Tailwind CSS
+**Location**: `/phase2-3/frontend`
 
-After design/architecture work, test for ADR significance:
+```bash
+# Run frontend
+cd phase2-3/frontend
+npm run dev
+```
 
-- Impact: long-term consequences? (e.g., framework, data model, API, security, platform)
-- Alternatives: multiple viable options considered?
-- Scope: cross‑cutting and influences system design?
+**Code Standards**:
+- Use Server Components by default
+- Client Components only for interactivity
+- TypeScript for all files
+- Tailwind CSS for styling (no inline styles)
+- API calls through `/lib/api.ts`
 
-If ALL true, suggest:
-📋 Architectural decision detected: [brief-description]
-   Document reasoning and tradeoffs? Run `/sp.adr [decision-title]`
+**Component Structure**:
+```
+frontend/
+├── app/                 # Pages and layouts
+│   ├── page.tsx
+│   └── layout.tsx
+├── components/          # Reusable UI components
+│   ├── TaskList.tsx
+│   └── TaskForm.tsx
+├── lib/                 # Utilities
+│   └── api.ts          # API client
+└── package.json
+```
 
-Wait for consent; never auto-create ADRs. Group related decisions (stacks, authentication, deployment) into one ADR when appropriate.
+## Database Guidelines
 
-## Basic Project Structure
+**Provider**: Neon Serverless PostgreSQL
+**ORM**: SQLModel
 
-- `.specify/memory/constitution.md` — Project principles
-- `specs/<feature>/spec.md` — Feature requirements
-- `specs/<feature>/plan.md` — Architecture decisions
-- `specs/<feature>/tasks.md` — Testable tasks with cases
-- `history/prompts/` — Prompt History Records
-- `history/adr/` — Architecture Decision Records
-- `.specify/` — SpecKit Plus templates and scripts
+**Connection**:
+- Use environment variable: `DATABASE_URL`
+- Connection pooling enabled
+- All queries must be async
 
-## Code Standards
-See `.specify/memory/constitution.md` for code quality, testing, performance, security, and architecture principles.
+**Models**:
+```
+backend/models.py contains:
+- User (managed by Better Auth)
+- Task
+- Conversation
+- Message
+```
+
+**Indexes**:
+- Tasks: user_id, completed status
+- Messages: conversation_id, created_at
+
+## AI Chatbot Guidelines (Phase 3)
+
+### OpenAI Agents SDK
+**Architecture**: Stateless chat endpoint with database persistence
+
+**Flow**:
+1. Receive user message
+2. Fetch conversation history from DB
+3. Build message array (history + new message)
+4. Store user message in DB
+5. Run agent with MCP tools
+6. Store assistant response in DB
+7. Return response to client
+
+### MCP Tools
+**Required Tools**:
+- `add_task`: Create new task
+- `list_tasks`: Retrieve tasks
+- `complete_task`: Mark task complete
+- `delete_task`: Remove task
+- `update_task`: Modify task
+
+**Tool Pattern**:
+```python
+@mcp.tool()
+async def add_task(user_id: str, title: str, description: str = None):
+    """Create a new task for the user."""
+    # Implementation with database
+    return {"task_id": id, "status": "created", "title": title}
+```
+
+## Kubernetes & Cloud Deployment (Phases 4-5)
+
+### Containerization
+**Tool**: Docker + Docker AI Agent (Gordon)
+
+```bash
+# Using Gordon (if available)
+docker ai "create dockerfile for python fastapi app"
+
+# Standard approach
+docker build -t todo-backend:latest ./backend
+docker build -t todo-frontend:latest ./frontend
+```
+
+### Local Kubernetes (Phase 4)
+**Stack**: Minikube, Helm, kubectl-ai, kagent
+
+```bash
+# Start Minikube
+minikube start
+
+# Deploy using kubectl-ai
+kubectl-ai "deploy todo backend with 2 replicas"
+
+# Deploy using Helm
+helm install todo-app ./helm/todo-chart
+```
+
+### Cloud Deployment (Phase 5)
+**Providers**: Azure AKS / Google GKE / Oracle OKE
+**Additional**: Kafka (Redpanda/Strimzi), Dapr
+
+**Dapr Components**:
+- Pub/Sub: Kafka for events
+- State: PostgreSQL for conversation state
+- Bindings: Cron for scheduled reminders
+- Secrets: Kubernetes secrets management
+
+## Command Reference
+
+### UV Commands (Use ONLY These)
+```bash
+# Create new project
+uv init <project-name>
+
+# Create virtual environment
+uv venv --python 3.14
+
+# Install package
+uv pip install <package>
+
+# Install from requirements
+uv pip install -r requirements.txt
+
+# Update requirements
+uv pip freeze > requirements.txt
+
+# Run script
+uv run python <script.py>
+
+# Run with module
+uv run -m pytest
+```
+
+### Spec-Kit Commands (via MCP)
+```bash
+# Initialize Spec-Kit
+uv run specifyplus init <project_name>
+
+# Use through MCP prompts in Claude Code:
+# - /specify - Create specifications
+# - /plan - Generate technical plan
+# - /tasks - Break into atomic tasks
+# - /implement - Execute implementation
+```
+
+### Development Commands
+```bash
+# Backend
+cd phase2-3/backend
+uv run uvicorn main:app --reload
+
+# Frontend
+cd phase2-3/frontend
+npm run dev
+
+# Both (via docker-compose)
+docker-compose up
+
+# Tests
+uv run pytest
+npm test
+```
+
+## Agent Behavior Rules
+
+### ✅ Agents MUST:
+- Read CLAUDE.md and AGENTS.md before every session
+- Reference Task IDs in all code comments
+- Follow the Constitution principles
+- Update specs before changing architecture
+- Request clarification for underspecified features
+- Use UV exclusively for Python packages
+- Use Python 3.14 for all environments
+- Follow monolithic architecture patterns
+
+### ❌ Agents MUST NOT:
+- Use pip instead of UV
+- Use Python versions other than 3.14
+- Write code without corresponding tasks
+- Create features not in specifications
+- Modify architecture without updating plans
+- Generate missing requirements
+- Add endpoints/fields not in specs
+- Use separate repos (must be monolithic)
+- Install packages outside UV
+
+## Error Handling
+
+### When Specs are Missing:
+```
+⛔ STOP - Missing specification for feature X
+✅ ACTION: Request spec update in speckit.specify
+```
+
+### When Architecture Changes:
+```
+⛔ STOP - Architecture change requires plan update
+✅ ACTION: Update speckit.plan with proposed changes
+```
+
+### When Tasks are Unclear:
+```
+⛔ STOP - Task T-042 lacks clear acceptance criteria
+✅ ACTION: Request task clarification in speckit.tasks
+```
+
+## Development Workflow Summary
+
+1. **Read Specs**: Always start by reading relevant specs
+   - `@specs/features/[feature].md`
+   - `@specs/api/[endpoint].md`
+   - `@speckit.plan`
+
+2. **Verify Task**: Confirm task exists and is clear
+   - Check `@speckit.tasks` for Task ID
+   - Verify preconditions met
+
+3. **Implement**: Write code following standards
+   - Reference Task ID in comments
+   - Follow Constitution principles
+   - Use UV for all Python packages
+   - Use Python 3.14 environments
+
+4. **Test**: Verify implementation
+   - Run tests: `uv run pytest`
+   - Check acceptance criteria met
+
+5. **Document**: Update if needed
+   - Update specs if behavior changed
+   - Update README for new features
+
+## Submission Requirements
+
+Each phase requires:
+1. ✅ Public GitHub repository
+2. ✅ All specs in `/specs` folder
+3. ✅ Working implementation
+4. ✅ README with setup instructions
+5. ✅ Demo video (max 90 seconds)
+
+## Key Reminders
+
+- 🔴 **CRITICAL**: Python 3.14 + UV only, NO pip
+- 🔴 **CRITICAL**: Monolithic repository structure
+- 🔴 **CRITICAL**: Spec-Driven Development (no vibe coding)
+- 🟡 **IMPORTANT**: Every code file references Task ID
+- 🟡 **IMPORTANT**: Update specs before implementing changes
+- 🟢 **BEST PRACTICE**: Use MCP tools for all agent interactions
+
+---
+
+## Quick Start Commands
+
+```bash
+# Phase 1: Console App
+uv venv --python 3.14
+source .venv/bin/activate
+uv pip install -r requirements.txt
+uv run python src/main.py
+
+# Phase 2-3: Full Stack
+cd phase2-3/backend && uv run uvicorn main:app --reload
+cd phase2-3/frontend && npm run dev
+
+# Phase 4: Local Kubernetes
+minikube start
+kubectl-ai "deploy todo app"
+
+# Phase 5: Cloud
+helm install todo ./helm/todo-chart
+```
+
+---
+
+**Remember**: Specifications are the single source of truth. When in doubt, check the specs. When specs are unclear, request updates. Never improvise.
