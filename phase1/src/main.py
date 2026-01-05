@@ -5,10 +5,10 @@ This module implements the console interface and command loop for the applicatio
 import sys
 from typing import Optional
 
-# Import using absolute paths to work correctly when run as a module
-from src.task_manager import TaskManager
-from src.display import display_menu, display_tasks, display_message, display_exit_message
-from src.models import ValidationError
+# Import using relative paths to work correctly when run as a module
+from .task_manager import TaskManager
+from .display import display_menu, display_tasks, display_message, display_exit_message
+from .models import ValidationError
 
 
 def main() -> None:
@@ -98,11 +98,11 @@ def handle_update(task_manager: TaskManager) -> None:
         # Get current task to show current values
         current_task = task_manager.get_task(task_id)
 
-        new_title = input(f"Enter new title (leave blank to keep '{current_task.title}'): ").strip()
-        new_title = new_title if new_title else None  # Use None to keep current
+        new_title_input = input(f"Enter new title (leave blank to keep '{current_task.title}'): ").strip()
+        new_title: Optional[str] = new_title_input if new_title_input else None  # Use None to keep current
 
-        new_desc = input(f"Enter new description (leave blank to keep current): ").strip()
-        new_desc = new_desc if new_desc else None  # Use None to keep current
+        new_desc_input = input("Enter new description (leave blank to keep current): ").strip()
+        new_desc: Optional[str] = new_desc_input if new_desc_input else None  # Use None to keep current
 
         # Only update if user provided new values
         title_to_use = new_title if new_title is not None else current_task.title
