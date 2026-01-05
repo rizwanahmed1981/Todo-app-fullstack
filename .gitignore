@@ -1,0 +1,44 @@
+# User-specific prompts and history
+prompts/
+
+
+# Claude-specific local settings
+.claude/settings.local.json
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+
+# Virtual environments
+.venv
+venv/
+env/
+
+# IDE and editor directories
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build artifacts
+build/
+dist/
+
+# Dependency directories (e.g., for potential JS tooling)
+node_modules/
+
+# Log files
+*.log
+*.log.*
+
+# Local environment variables
+.env
+.env.*
+!.env.example
+
+# OS-generated files
+.DS_Store
+Thumbs.db
