@@ -1,0 +1,100 @@
+# Development Tasks: Console Todo App - Phase I
+
+**Feature**: Console Todo App - Phase I
+**Branch**: `001-console-todo-app`
+**Created**: 2026-01-05
+**Source**: [spec.md](./specs/001-console-todo-app/spec.md), [plan.md](./specs/001-console-todo-app/plan.md)
+
+## Task Format Legend
+- **Task ID**: Sequential numbers (T001, T002, T003...)
+- **[P]**: Parallelizable tasks (different files, no dependencies)
+- **[US1/US2/US3]**: User Story labels mapping to spec.md stories
+- **Dependencies**: Tasks that must be completed before this task
+
+## Phase 1: Project Setup
+
+- [ ] T001 Create project structure per implementation plan in phase1/ directory
+- [ ] T002 [P] Create pyproject.toml with UV dependencies and Python 3.14 requirement
+- [ ] T003 [P] Create basic directory structure: src/, tests/, and __init__.py files
+- [ ] T004 Create README.md with setup and usage instructions from quickstart.md
+
+## Phase 2: Foundational Components
+
+- [ ] T005 [P] Create models.py with Task dataclass and custom exceptions per data-model.md
+- [ ] T006 [P] Create constants.py with application constants and UI formatting strings
+- [ ] T007 Create task_manager.py with in-memory storage and core business logic
+- [ ] T008 [P] Create display.py with formatting and output utilities
+- [ ] T009 [P] Create unit tests for models.py in tests/test_models.py
+- [ ] T010 [P] Create unit tests for validation in tests/test_validation.py
+
+## Phase 3: User Story 1 - Add and View Tasks (Priority: P1)
+
+- [ ] T011 [US1] Implement add_task functionality in task_manager.py with validation
+- [ ] T012 [US1] Implement list_tasks functionality in task_manager.py to show all tasks
+- [ ] T013 [P] [US1] Create unit tests for add_task functionality in tests/test_task_manager.py
+- [ ] T014 [P] [US1] Create unit tests for list_tasks functionality in tests/test_task_manager.py
+- [ ] T015 [US1] Implement add command in main.py console interface
+- [ ] T016 [US1] Implement list command in main.py console interface
+- [ ] T017 [US1] Add UI formatting for tasks display in display.py
+- [ ] T018 [US1] Test User Story 1 acceptance scenarios independently
+
+## Phase 4: User Story 2 - Update and Complete Tasks (Priority: P2)
+
+- [ ] T019 [US2] Implement update_task functionality in task_manager.py with validation
+- [ ] T020 [US2] Implement complete_task functionality in task_manager.py to toggle completion
+- [ ] T021 [US2] Implement delete_task functionality in task_manager.py
+- [ ] T022 [P] [US2] Create unit tests for update_task functionality in tests/test_task_manager.py
+- [ ] T023 [P] [US2] Create unit tests for complete_task functionality in tests/test_task_manager.py
+- [ ] T024 [P] [US2] Create unit tests for delete_task functionality in tests/test_task_manager.py
+- [ ] T025 [US2] Implement update command in main.py console interface
+- [ ] T026 [US2] Implement complete command in main.py console interface
+- [ ] T027 [US2] Implement delete command in main.py console interface
+- [ ] T028 [US2] Test User Story 2 acceptance scenarios independently
+
+## Phase 5: User Story 3 - Error Handling (Priority: P3)
+
+- [ ] T029 [US3] Implement error handling for invalid commands in main.py
+- [ ] T030 [US3] Implement error handling for non-existent task operations in task_manager.py
+- [ ] T031 [US3] Add validation for empty titles in models.py and task_manager.py
+- [ ] T032 [US3] Add validation for title length (max 200 chars) in models.py and task_manager.py
+- [ ] T033 [US3] Add validation for description length (max 1000 chars) in models.py and task_manager.py
+- [ ] T034 [P] [US3] Create unit tests for error handling scenarios in tests/test_validation.py
+- [ ] T035 [P] [US3] Create unit tests for invalid task operations in tests/test_task_manager.py
+- [ ] T036 [US3] Test User Story 3 acceptance scenarios independently
+
+## Phase 6: Polish & Cross-Cutting Concerns
+
+- [ ] T037 Add type hints to all functions in src/ following constitution requirements
+- [ ] T038 Add docstrings to all functions and classes in src/ following constitution requirements
+- [ ] T039 Implement help command in main.py showing available commands
+- [ ] T040 Implement exit command in main.py with graceful shutdown
+- [ ] T041 Add timestamp handling to Task model with timezone awareness
+- [ ] T042 Complete all unit tests and ensure 80%+ code coverage
+- [ ] T043 Run full integration test of all features working together
+- [ ] T044 Perform performance validation (start < 1s, operations < 100ms)
+
+## Dependencies
+
+- **User Story 2** depends on: User Story 1 (core add/list functionality needed for update/delete/complete)
+- **User Story 3** depends on: User Story 1 and 2 (error handling built on working features)
+
+## Parallel Execution Opportunities
+
+- **T002, T003, T006**: Project setup tasks can run in parallel
+- **T005, T009, T010**: Model and test creation can run in parallel
+- **T013, T014**: US1 testing tasks can run in parallel with implementation
+- **T022, T023, T024**: US2 testing tasks can run in parallel with implementation
+- **T032, T033, T034**: US3 validation tasks can run in parallel
+
+## Implementation Strategy
+
+1. **MVP Scope**: Complete Phase 1 (setup) + Phase 2 (foundational) + Phase 3 (US1) for basic functionality
+2. **Incremental Delivery**: Each user story phase delivers independently testable functionality
+3. **Constitution Compliance**: All code follows Python 3.14, UV package manager, type hints, and testing requirements
+4. **Testing Approach**: Unit tests for each component, integration tests for complete workflows
+
+## Independent Test Criteria
+
+- **US1**: Can be tested by starting app, adding a task, viewing the list, confirming task exists
+- **US2**: Can be tested by adding multiple tasks, updating one, marking one complete, verifying changes
+- **US3**: Can be tested by entering invalid commands and verifying helpful error messages without crashes
