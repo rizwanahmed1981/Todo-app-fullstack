@@ -1,6 +1,6 @@
 # User-specific prompts and history
 prompts/
-history/
+
 
 # Claude-specific local settings
 .claude/settings.local.json
