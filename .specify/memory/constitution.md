@@ -1,8 +1,8 @@
 <!--
 Sync Impact Report:
-Version change: N/A → 1.0.0
+Version change: 1.0.0 → 1.1.0
 Modified principles: N/A (new constitution)
-Added sections: All sections (new document)
+Added sections: Enhanced Frontend Requirements, JWT Authentication Details, API Endpoint Structure, Database Indexing Requirements
 Removed sections: N/A
 Templates requiring updates:
 - .specify/templates/plan-template.md ✅ updated
@@ -47,12 +47,17 @@ Python 3.14 exclusively for all environments; UV package manager only (no pip al
 - Database ORM: SQLModel for database operations
 - Authentication: Better Auth with JWT tokens
 - API design: RESTful patterns with async/await for all I/O operations
+- All API endpoints must follow the pattern `/api/{user_id}/` to ensure proper user data isolation
+- All endpoints require valid JWT token in Authorization header: `Authorization: Bearer <token>`
+- Backend services must validate JWT tokens and extract user information for data filtering
 
 ### Frontend Requirements
 - Frontend framework: Next.js 16 with App Router
 - Language: TypeScript for all frontend files
 - Styling: Tailwind CSS only (no inline styles)
 - Architecture: Server Components by default, Client Components only for interactivity
+- API calls must include JWT tokens in request headers for all authenticated endpoints
+- Better Auth integration for user session management and JWT token acquisition
 
 ### AI and MCP Integration
 - AI framework: OpenAI Agents SDK
@@ -85,6 +90,8 @@ Python 3.14 exclusively for all environments; UV package manager only (no pip al
 - SQL injection prevention through ORM usage
 - XSS protection through proper output encoding
 - Authentication and authorization checks on all protected endpoints
+- JWT token validation on all protected endpoints
+- User data isolation through proper authorization
 
 ## Architecture Patterns
 
@@ -99,6 +106,7 @@ Python 3.14 exclusively for all environments; UV package manager only (no pip al
 - All database queries must be async
 - User data isolation through user_id filtering
 - Connection pooling for database operations
+- Database queries must use appropriate indexes for performance
 
 ### MCP and AI Integration
 - MCP tools as first-class interfaces for AI agents
@@ -111,6 +119,8 @@ Python 3.14 exclusively for all environments; UV package manager only (no pip al
 - User session management through Better Auth
 - Token refresh mechanisms for long-lived sessions
 - Secure token storage and transmission
+- Frontend JWT tokens must be attached to all backend API requests
+- Backend must validate JWT tokens and filter data by authenticated user ID
 
 ## Development Workflow
 
@@ -152,6 +162,7 @@ Python 3.14 exclusively for all environments; UV package manager only (no pip al
 - Query optimization for complex joins
 - Database connection pooling configuration
 - Asynchronous queries for improved throughput
+- Required indexes: tasks.user_id for user data filtering, tasks.completed for status filtering
 
 ### Frontend Performance
 - Page load time under 3 seconds
@@ -178,6 +189,7 @@ Python 3.14 exclusively for all environments; UV package manager only (no pip al
 - Token expiration and refresh mechanisms
 - User data isolation through proper authorization
 - Session management through Better Auth
+- All API endpoints must filter data by authenticated user_id
 
 ### Data Protection
 - User data isolation through user_id filtering
@@ -273,4 +285,4 @@ Python 3.14 exclusively for all environments; UV package manager only (no pip al
 
 This constitution is the authoritative source for all technical decisions in the Todo Evolution project. All development activities must comply with these principles. Amendments require explicit documentation, team approval, and migration planning. The constitution supersedes all other practices and guides. All pull requests and code reviews must verify compliance with these principles. Complexity must be justified against these foundational principles. Use CLAUDE.md for runtime development guidance.
 
-**Version**: 1.0.0 | **Ratified**: 2026-01-05 | **Last Amended**: 2026-01-05
+**Version**: 1.1.0 | **Ratified**: 2026-01-05 | **Last Amended**: 2026-01-05
