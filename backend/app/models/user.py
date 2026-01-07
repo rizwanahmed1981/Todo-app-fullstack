@@ -17,5 +17,6 @@ class User(UserBase, table=True):
     Note: Better Auth manages the users table, this is for reference.
     """
     id: Optional[str] = Field(default=None, primary_key=True)
+    hashed_password: str = Field(nullable=False)
     created_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
     updated_at: Optional[datetime] = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow})

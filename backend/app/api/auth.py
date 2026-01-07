@@ -141,8 +141,7 @@ async def signup(user_create: UserCreate, session: Session = Depends(get_session
     user = UserModel(
         email=user_create.email,
         name=user_create.name,
-        # Note: User password is not stored in the User model as it's managed by Better Auth
-        # In a real implementation, we'd create the user in the database
+        hashed_password=hashed_password,
     )
 
     session.add(user)
@@ -180,7 +179,7 @@ async def login(user_login: UserLogin, session: Session = Depends(get_session)):
         )
 
     # Verify password
-    if not verify_password(user_login.password, user.email):  # Note: This is a placeholder
+    if not verify_password(user_login.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
