@@ -31,3 +31,15 @@ COMMANDS = {
 # Display constants
 TASK_INCOMPLETE_SYMBOL = "○"
 TASK_COMPLETE_SYMBOL = "●"
+
+# Enhanced card-style display constants for task items
+TASK_CARD_WIDTH = 60
+TASK_CARD_TOP_BORDER = "┌" + "─" * (TASK_CARD_WIDTH - 2) + "┐"
+TASK_CARD_MIDDLE_BORDER = "├" + "─" * (TASK_CARD_WIDTH - 2) + "┤"
+TASK_CARD_BOTTOM_BORDER = "└" + "─" * (TASK_CARD_WIDTH - 2) + "┘"
+TASK_CARD_LEFT_BORDER = "│"
+TASK_CARD_RIGHT_BORDER = "│"
+TASK_CARD_CORNER_TL = "┌"
+TASK_CARD_CORNER_TR = "┐"
+TASK_CARD_CORNER_BL = "└"
+TASK_CARD_CORNER_BR = "┘"
