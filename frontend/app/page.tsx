@@ -5,14 +5,13 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth';
 import { getTasks, createTask, toggleTaskCompletion, deleteTask } from '@/lib/api';
 import { Header } from '@/components/Header';
+import { AddTaskForm } from '@/components/AddTaskForm';
 
 export default function Home() {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [tasks, setTasks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [newTaskTitle, setNewTaskTitle] = useState('');
-  const [newTaskDescription, setNewTaskDescription] = useState('');
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -104,37 +103,8 @@ export default function Home() {
     }
   };
 
-  const handleAddTask = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!newTaskTitle.trim()) {
-      setError('Task title is required');
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem('authToken');
-      if (!token || !user) {
-        throw new Error('Not authenticated');
-      }
-
-      const result = await createTask(token, user.id, {
-        title: newTaskTitle,
-        description: newTaskDescription || undefined
-      });
-
-      if (result.success && result.data) {
-        setTasks(prevTasks => [...prevTasks, result.data]);
-        setNewTaskTitle('');
-        setNewTaskDescription('');
-        setError(null);
-      } else {
-        throw new Error(result.error || 'Failed to create task');
-      }
-    } catch (err) {
-      console.error('Failed to add task:', err);
-      setError(err instanceof Error ? err.message : 'Failed to add task. Please try again.');
-    }
+  const handleTaskAdded = (newTask: any) => {
+    setTasks(prevTasks => [...prevTasks, newTask]);
   };
 
   // Show loading if auth is still loading
@@ -233,28 +203,7 @@ export default function Home() {
 
           <div className="mt-8">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Add New Task</h2>
-            <form onSubmit={handleAddTask} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-              <input
-                type="text"
-                value={newTaskTitle}
-                onChange={(e) => setNewTaskTitle(e.target.value)}
-                placeholder="What needs to be done?"
-                className="w-full rounded border border-gray-300 px-4 py-2 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 mb-2"
-              />
-              <textarea
-                value={newTaskDescription}
-                onChange={(e) => setNewTaskDescription(e.target.value)}
-                placeholder="Add a description (optional)"
-                className="w-full rounded border border-gray-300 px-4 py-2 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 mb-2"
-                rows={2}
-              />
-              <button
-                type="submit"
-                className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
-                Add Task
-              </button>
-            </form>
+            <AddTaskForm onTaskAdded={handleTaskAdded} />
           </div>
         </div>
       </main>
