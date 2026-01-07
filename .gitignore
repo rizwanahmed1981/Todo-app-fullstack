@@ -1,5 +1,3 @@
-# User-specific prompts and history
-prompts/
 
 # Claude-specific local settings
 .claude/settings.local.json
@@ -44,3 +42,11 @@ Thumbs.db
 
 # Database files (if using SQLite)
 *.db
+
+
+# personel files
+PROJECT_REPORT.md
+hackathoon2.md
+
+# User-specific prompts and history
+prompts/
