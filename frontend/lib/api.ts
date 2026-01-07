@@ -36,6 +36,26 @@ export interface AuthErrorResponse {
   error?: string;
 }
 
+// Define types for task responses
+export interface Task {
+  id: number;
+  title: string;
+  description?: string;
+  completed: boolean;
+  user_id?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface TaskListResponse {
+  tasks: Task[];
+}
+
+export interface TaskErrorResponse {
+  message: string;
+  error?: string;
+}
+
 /**
  * Send login request to backend
  */
@@ -134,6 +154,181 @@ export async function getUserProfile(token: string): Promise<{ success: boolean;
     };
   } catch (error) {
     console.error('Get user profile error:', error);
+    return {
+      success: false,
+      error: 'Network error. Please try again.'
+    };
+  }
+}
+
+/**
+ * Get user's tasks from backend
+ */
+export async function getTasks(token: string, userId: string): Promise<{ success: boolean; data?: Task[]; error?: string }> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/${userId}/tasks`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData: TaskErrorResponse = await response.json();
+      return {
+        success: false,
+        error: errorData.message || 'Failed to fetch tasks'
+      };
+    }
+
+    const data: TaskListResponse = await response.json();
+    return {
+      success: true,
+      data: data.tasks
+    };
+  } catch (error) {
+    console.error('Get tasks error:', error);
+    return {
+      success: false,
+      error: 'Network error. Please try again.'
+    };
+  }
+}
+
+/**
+ * Create a new task for the user
+ */
+export async function createTask(token: string, userId: string, taskData: { title: string; description?: string }): Promise<{ success: boolean; data?: Task; error?: string }> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/${userId}/tasks`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(taskData),
+    });
+
+    if (!response.ok) {
+      const errorData: TaskErrorResponse = await response.json();
+      return {
+        success: false,
+        error: errorData.message || 'Failed to create task'
+      };
+    }
+
+    const data: Task = await response.json();
+    return {
+      success: true,
+      data
+    };
+  } catch (error) {
+    console.error('Create task error:', error);
+    return {
+      success: false,
+      error: 'Network error. Please try again.'
+    };
+  }
+}
+
+/**
+ * Update an existing task
+ */
+export async function updateTask(token: string, userId: string, taskId: number, taskData: Partial<Task>): Promise<{ success: boolean; data?: Task; error?: string }> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/${userId}/tasks/${taskId}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(taskData),
+    });
+
+    if (!response.ok) {
+      const errorData: TaskErrorResponse = await response.json();
+      return {
+        success: false,
+        error: errorData.message || 'Failed to update task'
+      };
+    }
+
+    const data: Task = await response.json();
+    return {
+      success: true,
+      data
+    };
+  } catch (error) {
+    console.error('Update task error:', error);
+    return {
+      success: false,
+      error: 'Network error. Please try again.'
+    };
+  }
+}
+
+/**
+ * Toggle task completion status
+ */
+export async function toggleTaskCompletion(token: string, userId: string, taskId: number): Promise<{ success: boolean; data?: Task; error?: string }> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/${userId}/tasks/${taskId}/complete`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData: TaskErrorResponse = await response.json();
+      return {
+        success: false,
+        error: errorData.message || 'Failed to update task completion'
+      };
+    }
+
+    const data: Task = await response.json();
+    return {
+      success: true,
+      data
+    };
+  } catch (error) {
+    console.error('Toggle task completion error:', error);
+    return {
+      success: false,
+      error: 'Network error. Please try again.'
+    };
+  }
+}
+
+/**
+ * Delete a task
+ */
+export async function deleteTask(token: string, userId: string, taskId: number): Promise<{ success: boolean; error?: string }> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/${userId}/tasks/${taskId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData: TaskErrorResponse = await response.json();
+      return {
+        success: false,
+        error: errorData.message || 'Failed to delete task'
+      };
+    }
+
+    return {
+      success: true
+    };
+  } catch (error) {
+    console.error('Delete task error:', error);
     return {
       success: false,
       error: 'Network error. Please try again.'
