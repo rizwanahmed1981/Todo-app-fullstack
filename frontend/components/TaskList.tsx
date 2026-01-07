@@ -1,14 +1,17 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { TaskItem } from './TaskItem';
+import { EditTaskModal } from './EditTaskModal';
 
-interface Task {
+export interface Task {
   id: number;
   title: string;
   description?: string;
   completed: boolean;
   user_id?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 interface TaskListProps {
@@ -18,6 +21,22 @@ interface TaskListProps {
 }
 
 export const TaskList: React.FC<TaskListProps> = ({ tasks, onToggleComplete, onDelete }) => {
+  const [editingTask, setEditingTask] = useState<any>(null);
+
+  const handleEdit = (task: any) => {
+    setEditingTask(task);
+  };
+
+  const handleSaveEdit = (updatedTask: any) => {
+    // In a real app, you'd update the task in the parent component
+    // For now, we'll just close the modal
+    setEditingTask(null);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingTask(null);
+  };
+
   if (tasks.length === 0) {
     return (
       <div className="rounded-lg border border-gray-200 bg-white p-8 text-center shadow-sm dark:border-gray-700 dark:bg-gray-800">
@@ -37,8 +56,17 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks, onToggleComplete, onD
           completed={task.completed}
           onToggleComplete={onToggleComplete}
           onDelete={onDelete}
+          onEdit={() => handleEdit(task)}
         />
       ))}
+
+      {editingTask && (
+        <EditTaskModal
+          task={editingTask}
+          onSave={handleSaveEdit}
+          onCancel={handleCancelEdit}
+        />
+      )}
     </div>
   );
 };
