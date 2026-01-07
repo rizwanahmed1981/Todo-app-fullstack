@@ -12,6 +12,7 @@ export default function Home() {
   const [tasks, setTasks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [taskError, setTaskError] = useState<string | null>(null);
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -77,7 +78,7 @@ export default function Home() {
           task.id === id ? { ...task, completed: !task.completed } : task
         )
       );
-      setError(err instanceof Error ? err.message : 'Failed to update task. Please try again.');
+      setTaskError(err instanceof Error ? err.message : 'Failed to update task. Please try again.');
     }
   };
 
@@ -99,12 +100,13 @@ export default function Home() {
     } catch (err) {
       console.error('Failed to delete task:', err);
       // Revert optimistic update on error
-      setError(err instanceof Error ? err.message : 'Failed to delete task. Please try again.');
+      setTaskError(err instanceof Error ? err.message : 'Failed to delete task. Please try again.');
     }
   };
 
   const handleTaskAdded = (newTask: any) => {
     setTasks(prevTasks => [...prevTasks, newTask]);
+    setTaskError(null); // Clear any previous task errors
   };
 
   // Show loading if auth is still loading
@@ -192,6 +194,12 @@ export default function Home() {
       <Header />
       <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-16 px-4 bg-white dark:bg-black sm:items-start">
         <div className="w-full">
+          {taskError && (
+            <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 text-center shadow-sm dark:border-red-800 dark:bg-red-900/20">
+              <p className="text-red-700 dark:text-red-300">{taskError}</p>
+            </div>
+          )}
+
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Your Tasks</h2>
             <TaskList
