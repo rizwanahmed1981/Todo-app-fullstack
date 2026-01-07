@@ -21,6 +21,7 @@ ANSI_RESET = '\033[0m'
 ANSI_BOLD = '\033[1m'
 ANSI_DIM = '\033[2m'
 ANSI_UNDERLINE = '\033[4m'
+ANSI_STRIKETHROUGH = '\033[9m'
 
 # Modern color palette
 COLOR_TASK_TITLE = '\033[1;36m'  # Bold Cyan
@@ -29,6 +30,7 @@ COLOR_TASK_STATUS_PENDING = '\033[31m'  # Red
 COLOR_TASK_STATUS_COMPLETED = '\033[32m'  # Green
 COLOR_TASK_DESCRIPTION = '\033[37m'  # White
 COLOR_CARD_BORDER = '\033[36m'   # Cyan
+COLOR_COMPLETED_TASK = '\033[2;37m'  # Dimmed Gray (for completed tasks)
 
 
 def display_menu() -> None:
@@ -58,6 +60,10 @@ def display_task(task: Task, highlighted: bool = False) -> None:
     # Determine colors based on status
     status_color = COLOR_TASK_STATUS_COMPLETED if task.completed else COLOR_TASK_STATUS_PENDING
 
+    # For completed tasks, use dimmed gray for title and description
+    title_color = COLOR_COMPLETED_TASK if task.completed else COLOR_TASK_TITLE
+    desc_color = COLOR_COMPLETED_TASK if task.completed else COLOR_TASK_DESCRIPTION
+
     # Highlight color for hover effect simulation
     highlight_bg = '\033[48;5;235m' if highlighted else ''
 
@@ -65,12 +71,21 @@ def display_task(task: Task, highlighted: bool = False) -> None:
     print(highlight_bg + COLOR_CARD_BORDER + TASK_CARD_TOP_BORDER + ANSI_RESET)
 
     # Print task content with colors
-    content_line = f"{highlight_bg}{COLOR_CARD_BORDER}{TASK_CARD_LEFT_BORDER}{ANSI_RESET} {status_symbol} {COLOR_TASK_ID}{highlight_bg}[{task.id}]{ANSI_RESET} {COLOR_TASK_TITLE}{ANSI_BOLD}{highlight_bg}{task.title}{ANSI_RESET} - {status_color}{highlight_bg}{status_text}{ANSI_RESET} {COLOR_CARD_BORDER}{highlight_bg}{TASK_CARD_RIGHT_BORDER}{ANSI_RESET}"
+    if task.completed:
+        # For completed tasks, apply strikethrough to title
+        content_line = f"{highlight_bg}{COLOR_CARD_BORDER}{TASK_CARD_LEFT_BORDER}{ANSI_RESET} {status_symbol} {COLOR_TASK_ID}{highlight_bg}[{task.id}]{ANSI_RESET} {title_color}{ANSI_STRIKETHROUGH}{ANSI_BOLD}{highlight_bg}{task.title}{ANSI_RESET} - {status_color}{highlight_bg}{status_text}{ANSI_RESET} {COLOR_CARD_BORDER}{highlight_bg}{TASK_CARD_RIGHT_BORDER}{ANSI_RESET}"
+    else:
+        content_line = f"{highlight_bg}{COLOR_CARD_BORDER}{TASK_CARD_LEFT_BORDER}{ANSI_RESET} {status_symbol} {COLOR_TASK_ID}{highlight_bg}[{task.id}]{ANSI_RESET} {title_color}{ANSI_BOLD}{highlight_bg}{task.title}{ANSI_RESET} - {status_color}{highlight_bg}{status_text}{ANSI_RESET} {COLOR_CARD_BORDER}{highlight_bg}{TASK_CARD_RIGHT_BORDER}{ANSI_RESET}"
     print(content_line)
 
     # Print description if available
     if task.description:
-        desc_line = f"{highlight_bg}{COLOR_CARD_BORDER}{TASK_CARD_LEFT_BORDER}{ANSI_RESET} {COLOR_TASK_DESCRIPTION}{highlight_bg}Description: {task.description}{ANSI_RESET} {COLOR_CARD_BORDER}{highlight_bg}{TASK_CARD_RIGHT_BORDER}{ANSI_RESET}"
+        if task.completed:
+            # For completed tasks, apply strikethrough to description
+            desc_line = f"{highlight_bg}{COLOR_CARD_BORDER}{TASK_CARD_LEFT_BORDER}{ANSI_RESET} {desc_color}{ANSI_STRIKETHROUGH}Description: {task.description}{ANSI_RESET} {COLOR_CARD_BORDER}{highlight_bg}{TASK_CARD_RIGHT_BORDER}{ANSI_RESET}"
+        else:
+            desc_line = f"{highlight_bg}{COLOR_CARD_BORDER}{TASK_CARD_LEFT_BORDER}{ANSI_RESET} {desc_color}Description: {task.description}{ANSI_RESET} {COLOR_CARD_BORDER}{highlight_bg}{TASK_CARD_RIGHT_BORDER}{ANSI_RESET}"
+
         # Truncate if too long to fit in card
         if len(desc_line) > TASK_CARD_WIDTH:
             desc_line = desc_line[:TASK_CARD_WIDTH-4] + "... " + highlight_bg + COLOR_CARD_BORDER + TASK_CARD_RIGHT_BORDER + ANSI_RESET
